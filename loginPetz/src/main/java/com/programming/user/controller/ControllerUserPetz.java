@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
-@RequestMapping("api/userRegister/")
+@RequestMapping("api/userPet/")
 public class ControllerUserPetz {
 
     @Autowired
@@ -30,7 +31,7 @@ public class ControllerUserPetz {
 
     @PostMapping("verifyCode")
     public ResponseEntity<String> verifyCode(@RequestBody VerifyCodeNumber number) {
-        Boolean code = userServicePetz.verifyNumber(number.getCode());
+        Boolean code = userServicePetz.verifyNumber(number.getCode()); // Verifica se é o mesmo código enviado no e-mail.
         if (code){
             return ResponseEntity.ok("Carregando....");
         }
@@ -39,12 +40,12 @@ public class ControllerUserPetz {
 
     // change password
     @PostMapping("changePassword")
-    public ResponseEntity<?> changePasswordUser(@RequestBody UserPetz newPasswordUser, @RequestBody UserPetz emailUSer){
-        boolean objUpdate = userServicePetz.changePassword(newPasswordUser, emailUSer);
+    public ResponseEntity<?> changePasswordUser(@RequestBody UserPetz newPassword){
+        boolean objUpdate = userServicePetz.changePassword(newPassword);
         if (objUpdate){
-            return ResponseEntity.ok("Senha alterada");
+            return ResponseEntity.ok("Senha alterada"); // Precisa ser true
         }
-        return ResponseEntity.ok("Não alterada.");
+        return ResponseEntity.ok("Senha não alterada.");
     }
     // Create user.
     // If you want to show user your response from createUser, you should change <?> to UserPetz.
