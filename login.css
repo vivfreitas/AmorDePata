@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&family=Kalam:wght@300;400;700&family=Kings&family=Nerko+One&family=Oleo+Script:wght@400;700&family=Pacifico&family=Rubik+Vinyl&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&family=Kalam:wght@300;400;700&family=Nerko+One&family=Oleo+Script:wght@400;700&family=Pacifico&display=swap');@import url('https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&family=Kalam:wght@300;400;700&family=Nerko+One&family=Oleo+Script:wght@400;700&display=swap');
+/*
+.kalam-light {
+  font-family: "Kalam", cursive;
+  font-weight: 300;
+  font-style: normal;
+}
+  */
+
+  /*
+  .akaya-kanadaka-regular {
+  font-family: "Akaya Kanadaka", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+*/
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html, body {
+    height: 100%; /* Ocupa toda a tela */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+header{
+    display: flex;
+}
+header img{
+    margin-left: 2%;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 30px;
+}
+main{
+    height:731px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#login{
+    width: 80%;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#family-dog{
+    border-radius: 0% 0% 0% 25%; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 45%;
+    height: 600px;
+    background-color: #fdfaf6;
+}
+
+#title-pet{
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+    background-color: #fdfaf6;
+    color: #643827;
+    display: flex;
+}
+#title-pet p {
+    margin-left: 5px;
+    font-family: "Rubik Vinyl", system-ui;
+    font-weight: bold;
+    font-size: 35px;
+    font-style: normal;
+}
+#title-pet img {
+    width: 50px;
+}
+#image-family-dog img{
+    width: 750px;
+}
+footer{
+    height: 100px;
+    display: flex;
+    align-items: flex-end;
+}
+footer p{
+    margin-bottom: 0.5%;
+    margin-left: 1%;
+    font-size: 12px;
+}
+
+#formule-pet-login-register{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30%;
+    height:600px;
+
+    background-image: url('imagens/patas.png'), url('imagens/patas.png');
+    background-repeat: no-repeat, no-repeat;
+    background-position: -100px 30px, 180px bottom; 
+    background-size: 350px, 350px;
+}
+
+#formule-pet-login-register p{
+    color: #643827;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    margin-left: 5%;
+}
+#form-user{
+    margin-top: 50px;
+    width: 100%;
+    height: 350px;
+}
+#form-user-teste{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.register-user{
+    display: flex;
+    flex-direction: column;
+    margin-left: 5%;
+}
+.label-user{
+    color:#8f8e8e;
+}
+.label-user-register{
+    display: none;
+}
+#password-user-confirmed{
+    display: flex;
+    /*justify-content: space-evenly;*/
+}
+.password-confirmed-equals{
+    width: 100%; /* Tirar no JS para caber a outra parte de confirmação de senha.*/
+    margin-left: 5%;
+    display: flex;
+    flex-direction: column;
+}
+.password-confirmed-input {
+    border:1px solid #8f8e8e;
+    width: 95%; /* Tirar no JS para caber a outra parte de confirmação de senha.*/
+    padding: 15px
+}
+.password-confirmed-div-display{
+    display: none; /* Colocar no block para a outra parte de confirmação de senha.*/
+}
+#bnt-register-user{
+    cursor: pointer;
+    background-color: #643827;
+    color: white;
+    font-weight: 500;
+    margin-top: 30px;
+    border-radius: 10px;
+    border:1px solid #fff;
+    width: 28%;
+    padding: 15px;
+}
+#create-user-div{
+
+    display: flex;
+    justify-content: center;
+}
+.input-user{
+    border:1px solid #8f8e8e;
+    margin-bottom: 10px;
+    padding: 15px;
+    width: 95%;
+}
+
+.label-user{
+    font-weight: bold;
+    color: #643827;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
