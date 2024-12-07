@@ -48,7 +48,7 @@ main{
 }
 #login{
     width: 80%;
-    height: 600px;
+    height: 800px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -61,7 +61,7 @@ main{
     align-items: center;
     justify-content: space-evenly;
     width: 45%;
-    height: 600px;
+    height: 800px;
     background-color: #fdfaf6;
 }
 
@@ -106,11 +106,11 @@ footer p{
 
     background-image: url('imagens/patas.png'), url('imagens/patas.png');
     background-repeat: no-repeat, no-repeat;
-    background-position: -100px 30px, 180px bottom; 
+    background-position: -98px 30px, 180px bottom; 
     background-size: 350px, 350px;
 }
 
-#formule-pet-login-register p{
+#title-sign-or-create{
     color: #643827;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 28px;
@@ -120,7 +120,6 @@ footer p{
 #form-user{
     margin-top: 50px;
     width: 100%;
-    height: 350px;
 }
 #form-user-teste{
     display: flex;
@@ -133,28 +132,24 @@ footer p{
     flex-direction: column;
     margin-left: 5%;
 }
-.label-user{
-    color:#8f8e8e;
-}
+
 .label-user-register{
     display: none;
 }
 #password-user-confirmed{
     display: flex;
-    /*justify-content: space-evenly;*/
+    justify-content: space-evenly;
 }
 .password-confirmed-equals{
     width: 100%; /* Tirar no JS para caber a outra parte de confirmação de senha.*/
     margin-left: 5%;
-    display: flex;
-    flex-direction: column;
 }
 .password-confirmed-input {
     border:1px solid #8f8e8e;
     width: 95%; /* Tirar no JS para caber a outra parte de confirmação de senha.*/
     padding: 15px
 }
-.password-confirmed-div-display{
+#password-confirmed-div-display{
     display: none; /* Colocar no block para a outra parte de confirmação de senha.*/
 }
 #bnt-register-user{
@@ -168,10 +163,52 @@ footer p{
     width: 28%;
     padding: 15px;
 }
-#create-user-div{
 
+#teste_user {
+    border-radius: 10px;
+    color: #fff;
+    background-color: #643827;
+    border: 1px solid #fff;
+    margin-top: 30px;
+    padding: 15px;
+    width: 28%;
+}
+#bnt_test_register_user{
+    background-color: #643827;
+    color: white;
+    font-weight: 500;
+    margin-top: 30px;
+    border-radius: 10px;
+    border:1px solid #fff;
+    width: 28%;
+    padding: 15px;
+
+}
+#id-register-now-user{
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #643827;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+#id-login-now-user{
+    display: none;
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #643827;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+#create-user-div{
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+}
+.id-register-user{
+    font-size: 12px;
 }
 .input-user{
     border:1px solid #8f8e8e;
@@ -185,4 +222,31 @@ footer p{
     color: #643827;
     margin-bottom: 10px;
     font-size: 13px;
+}
+#warning_passwordDoenst_matches{
+    display: none;
+    color: rgb(213, 3, 3);
+    margin-top: 10px;
+}
+#go_to_mainPage{
+    display: none;
+    text-decoration: none;
+    color: #643827;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+#forgot_password_div{
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+#change_password_user{
+    margin-right: 5%;
+    color: #494949;
+    text-decoration: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 17px;
+    font-weight: bold;
 }
