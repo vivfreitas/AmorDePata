@@ -8,6 +8,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -29,7 +30,7 @@ public class UserServicePetz {
         return code;
     }
 
-   // Send an e-mail
+   // Send an e-mail - Envia o código de confirmação.
     public Boolean enviarEmail(String userEmail){
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         List<UserPetz> userData = userPetzRepository.findAll();
@@ -45,16 +46,19 @@ public class UserServicePetz {
         }
         return false;
     }
+
+    // Vai verificar se é o mesmo código. Se sim, segue para a troca de senha (Troca de página no front-end).
     public Boolean verifyNumber(Integer number){
         return code == number;
     }
 
     // Pegar alguma informação do usuário e usá-lo para modificar a senha.
-    public Boolean changePassword(UserPetz oldPassword, UserPetz userEmail){
+    public Boolean changePassword(UserPetz oldPassword){
         List<UserPetz> dataUser = userPetzRepository.findAll();
         for (UserPetz obj: dataUser){
-            if (dataUser.equals(userEmail.getUserEmail())){
-                UserPetz newPassword = userPetzRepository.getReferenceById(oldPassword.getIdUser());
+            if (obj.getUserEmail().equals(oldPassword.getUserEmail())){ // Rastrear o e-mail desejado.
+                System.out.println(oldPassword.getUserEmail());
+                UserPetz newPassword = userPetzRepository.getReferenceById(obj.getIdUser()); // Vai pegar o ID referenciado
                 dataUpdate(newPassword, oldPassword);
                 userPetzRepository.save(newPassword);
                 return true;
