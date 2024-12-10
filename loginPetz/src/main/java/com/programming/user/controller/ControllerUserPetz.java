@@ -18,7 +18,7 @@ public class ControllerUserPetz {
     @Autowired
     private UserServicePetz userServicePetz;
 
-    @PostMapping("enviar")
+    @PostMapping("enviarEmail")
     public ResponseEntity<?> sendEmail(@RequestBody UserPetz userEmail) {
         boolean obj = userServicePetz.enviarEmail(userEmail.getUserEmail());
         if (obj){
@@ -71,7 +71,7 @@ public class ControllerUserPetz {
         }
     }
 
-    // Read all Users
+    // Read all Users - TESTE
     @GetMapping("readAllUser")
     public ResponseEntity<List<UserPetzDTO>> readAll(){
         List<UserPetzDTO> obj = userServicePetz.readAllUser();

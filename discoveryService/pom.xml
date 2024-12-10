@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.programming.user</groupId>
+    <groupId>com.programming.gateway</groupId>
     <artifactId>discoveryService</artifactId>
 
     <properties>
@@ -43,5 +43,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>

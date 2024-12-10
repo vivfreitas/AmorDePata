@@ -12,6 +12,8 @@
         <module>loginPetz</module>
         <module>discoveryService</module>
         <module>gateway</module>
+        <module>gateway</module>
+        <module>discoveryService</module>
     </modules>
 
     <parent>
