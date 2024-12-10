@@ -5,6 +5,10 @@
 const titleSignOrCreate = document.getElementById("title-sign-or-create");
 const labelUserRegister = document.querySelectorAll(".label-user-register");
 const labelUser = document.querySelectorAll(".label-user");
+const userEmail = document.getElementById("userEmail");     
+
+// Inputs
+const emailUser = document.getElementById("email-user")
 
 // Campos de senha
 const passwordUserConfirmed = document.getElementById("password-user-confirmed");
@@ -16,11 +20,12 @@ const passwordSecondConfirmedEquals = document.getElementById("passwordSecond-co
 const warningPasswordDoesntMatch = document.getElementById("warning_passwordDoenst_matches");
 
 // Botões
-const btnRegisterUser = document.getElementById("bnt-register-user");
+const btnRegisterUser = document.getElementById("bnt-login-user");
 const idRegisterNowUser = document.getElementById("id-register-now-user");
 const idLoginNowUser = document.getElementById("id-login-now-user");
 const goToMainPage = document.getElementById("go_to_mainPage");
 const changePasswordUser = document.getElementById("change_password_user");
+const bntCodeUser = document.getElementById('bnt-code-user');
 
 // Formulário e campos de entrada
 const formUserTeste = document.getElementById("form-user-teste");
@@ -138,4 +143,46 @@ btnRegisterUser.addEventListener('click', async function(event) {
     }
 });
 
-changePasswordUser.addEventListener;
+// Link para o usuário colocar o seu e-mail e receber o código.
+changePasswordUser.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    cpfUser.style.display = 'none'
+    passwordConfirmedEquals.style.display = 'none'
+
+    for (var labelUserAll of labelUser) {
+        labelUserAll.style.display = 'none';
+    }
+
+    userEmail.style.display = 'block'
+    titleSignOrCreate.innerHTML = "ESQUECEU SUA SENHA DE ACESSO?"
+    emailUser.style.display = 'block'
+    idRegisterNowUser.style.display = 'none'
+    btnRegisterUser.style.display = 'none'
+    changePasswordUser.style.display = 'none'
+    bntCodeUser.style.display = 'block'
+})
+
+// Botão para enviar o código para o e-mail do usuário.
+// Quando o usuário clicar, abrirá um formulário para confirmar o código.
+// Após isso, você precisará usar esse mesmo e-mail para confirmar que é o usuário e redefinir a senha.
+bntCodeUser.addEventListener('click', async function (event) {
+    event.preventDefault();
+
+    const userEmail = {
+        userEmail: getElementById("email-user")
+    }
+    
+    // Vamos colocar a URL para envio de e-mail para o usuário.
+    try {
+        const envioEmail = await fetch("http://localhost:8080/api/userPet/enviarEmail", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // Aqui avisamos que os dados (user) serão enviados em formato JSON
+            },
+            body: JSON.stringify(user)
+        });
+    } catch(erro){
+        console.log("Houve um problema." + erro)
+    }
+})

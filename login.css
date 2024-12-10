@@ -152,7 +152,7 @@ footer p{
 #password-confirmed-div-display{
     display: none; /* Colocar no block para a outra parte de confirmação de senha.*/
 }
-#bnt-register-user{
+.bnt-style-user{
     cursor: pointer;
     background-color: #643827;
     color: white;
@@ -160,10 +160,12 @@ footer p{
     margin-top: 30px;
     border-radius: 10px;
     border:1px solid #fff;
-    width: 28%;
+    width: 30%;
     padding: 15px;
 }
-
+#bnt-code-user{
+    display: none;
+}
 #teste_user {
     border-radius: 10px;
     color: #fff;
@@ -249,4 +251,8 @@ footer p{
     font-family: 'Courier New', Courier, monospace;
     font-size: 17px;
     font-weight: bold;
+}
+
+#bnt-register-user{
+    display: none;
 }
