@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -19,14 +20,10 @@ public class ControllerUserPetz {
     private UserServicePetz userServicePetz;
 
     @PostMapping("enviarEmail")
-    public ResponseEntity<?> sendEmail(@RequestBody UserPetz userEmail) {
-        boolean obj = userServicePetz.enviarEmail(userEmail.getUserEmail());
-        if (obj){
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("E-mail enviado.");
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("" +
-                    "E-mail não encontrado. Verifique o e-mail e tente novamente.");
-        }
+    public ResponseEntity<String> sendEmail(@RequestBody Map<String, String> email) { // Chave e valor do postman
+        String userEmail = email.get("userEmail"); // Nome do corpo da requisição que definimos.
+        userServicePetz.enviarEmail(userEmail);
+        return ResponseEntity.accepted().body("E-mail está sendo processado...");
     }
 
     @PostMapping("verifyCode")
