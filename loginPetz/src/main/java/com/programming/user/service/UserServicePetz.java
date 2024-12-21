@@ -6,12 +6,14 @@ import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserServicePetz {
@@ -27,24 +29,37 @@ public class UserServicePetz {
    private int code;
     public int generateRandomCode(){
         code = randomCode.nextInt(6000);
-        return code;
+        if (code > 1000) {
+            return code;
+        }
+        return 0;
     }
 
    // Send an e-mail - Envia o código de confirmação.
-    public Boolean enviarEmail(String userEmail){
+    // Faremos com que o E-mail trabalhe de forma assíncrona
+    @Async
+    public CompletableFuture<Boolean> enviarEmail(String userEmail){ // CompletableFuture -> Quando queremos ver o resultado, usamos ele. Caso ao contrário, será necessário o Void.
+        String email = userEmail.trim();
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         List<UserPetz> userData = userPetzRepository.findAll();
         for (UserPetz obj: userData){
-            if (obj.getUserEmail().equals(userEmail)){ // Se for verdadeiro.
+            if (obj.getUserEmail().equals(email)){ // Se for verdadeiro.
                 generateRandomCode();
-                mailMessage.setTo(userEmail);
+                mailMessage.setTo(email);
                 mailMessage.setSubject("Changed Password");
                 mailMessage.setText("Código: " + code); /* gerador de número */
-                javaMailSender.send(mailMessage);
-                return true;
+                try{
+                    javaMailSender.send(mailMessage);
+                    System.out.println("E-mail enviado com sucesso para: " + email);
+                    return CompletableFuture.completedFuture(true);
+                } catch (Exception e) {
+                    System.err.println("Erro ao enviar e-mail: " + e.getMessage());
+                    return CompletableFuture.completedFuture(false);
+                }
             }
         }
-        return false;
+        System.out.println("E-mail não encontrado na base de dados.");
+        return CompletableFuture.completedFuture(false);
     }
 
     // Vai verificar se é o mesmo código. Se sim, segue para a troca de senha (Troca de página no front-end).
