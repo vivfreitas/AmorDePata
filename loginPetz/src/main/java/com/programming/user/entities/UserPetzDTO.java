@@ -5,7 +5,7 @@ public class UserPetzDTO {
     private Long idUser;
     private String userName;
     private String userEmail;
-    private Long userNumber;
+    private String userNumber;
     private String userPassword;
 
     public UserPetzDTO(){}
@@ -14,7 +14,7 @@ public class UserPetzDTO {
             Long idUser,
             String userName,
             String userEmail,
-            Long userNumber,
+            String userNumber,
             String userPassword) {
         this.idUser = idUser;
         this.userName = userName;
@@ -47,11 +47,11 @@ public class UserPetzDTO {
         this.userPassword = userPassword;
     }
 
-    public Long getUserNumber() {
+    public String getUserNumber() {
         return userNumber;
     }
 
-    public void setUserNumber(Long userNumber) {
+    public void setUserNumber(String userNumber) {
         this.userNumber = userNumber;
     }
 

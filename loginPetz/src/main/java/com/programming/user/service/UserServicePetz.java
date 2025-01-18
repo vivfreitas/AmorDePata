@@ -28,14 +28,14 @@ public class UserServicePetz {
    private final Random randomCode = new Random();
    private int code;
     public int generateRandomCode(){
-        code = randomCode.nextInt(6000);
-        if (code > 1000) {
+        code = randomCode.nextInt(900000);
+        if (code > 100000) {
             return code;
         }
         return 0;
     }
 
-   // Send an e-mail - Envia o código de confirmação.
+     // Send an e-mail - Envia o código de confirmação.
     // Faremos com que o E-mail trabalhe de forma assíncrona
     @Async
     public CompletableFuture<Boolean> enviarEmail(String userEmail){ // CompletableFuture -> Quando queremos ver o resultado, usamos ele. Caso ao contrário, será necessário o Void.
@@ -46,8 +46,8 @@ public class UserServicePetz {
             if (obj.getUserEmail().equals(email)){ // Se for verdadeiro.
                 generateRandomCode();
                 mailMessage.setTo(email);
-                mailMessage.setSubject("Changed Password");
-                mailMessage.setText("Código: " + code); /* gerador de número */
+                mailMessage.setSubject("Pets - Verificação de segurança");
+                mailMessage.setText("Código para redefinição de senha: " + code); /* gerador de número */
                 try{
                     javaMailSender.send(mailMessage);
                     System.out.println("E-mail enviado com sucesso para: " + email);
@@ -60,6 +60,17 @@ public class UserServicePetz {
         }
         System.out.println("E-mail não encontrado na base de dados.");
         return CompletableFuture.completedFuture(false);
+    } // -> alternativa para o completableFuture é o Spring WebFlux
+
+    // Verifica se o e-mail existe na base de dados para mudar a senha -> Método auxiliar para o enviarEmail
+    public Boolean checkEmailUser (String email) {
+        List<UserPetz> dataUser = userPetzRepository.findAll();
+        for (UserPetz obj: dataUser){
+            if (obj.getUserEmail().equals(email)){
+                return true;
+            }
+        }
+        return false;
     }
 
     // Vai verificar se é o mesmo código. Se sim, segue para a troca de senha (Troca de página no front-end).
@@ -67,7 +78,7 @@ public class UserServicePetz {
         return code == number;
     }
 
-    // Pegar alguma informação do usuário e usá-lo para modificar a senha.
+    // Pegar o E-mail do usuário e usá-lo para modificar a senha.
     public Boolean changePassword(UserPetz oldPassword){
         List<UserPetz> dataUser = userPetzRepository.findAll();
         for (UserPetz obj: dataUser){
@@ -81,7 +92,6 @@ public class UserServicePetz {
         }
             return false;
     }
-
     private void dataUpdate(UserPetz newPassword, UserPetz oldPassword) {
         newPassword.setUserPassword(oldPassword.getUserPassword());
     }
