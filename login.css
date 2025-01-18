@@ -107,6 +107,7 @@ footer p {
 }
 
 #title-sign-or-create {
+    display: block; /* Não tem display */
     margin-bottom: 50px;
     margin-left: 5%;
     color: #643827;
@@ -120,7 +121,7 @@ footer p {
 }
 
 #form-user-teste {
-    display: flex;
+    display: flex; /* Colocar como none na hora de pedir o código ao usuário */
     flex-direction: column;
 }
 
@@ -314,4 +315,52 @@ footer p {
 #description-login-erro {
     margin-top: 5px;
     font-weight: normal;
+}
+
+#information-email-incorrect{
+    display: none;
+}
+.information-email-incorrect{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+}
+.information-email-incorrect p {
+    color: red;
+    font-size: 18px;
+    font-weight: bold;
+}
+#description-email-erro{
+    margin-top: 5px;
+    font-weight: normal;
+}
+
+#send-code{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+#form-send-code{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#code-from-email{
+    display: none;
+}
+#code-from-email p {
+    margin-left: 3%;
+    margin-bottom: 25px;
+    font-size: 50px;
+}
+.format-code-campNumb{
+    text-align: center;
+    width: 60px;
+    height: 70px;
+    font-size: 30px;
+    border-radius: 10px;
+    border-color: #643827;
+    border-width: 3px;
 }

@@ -1,7 +1,6 @@
 /*
 
 */
-
 // ==================================================
 // SELEÇÃO DOS ELEMENTOS DO DOM
 
@@ -17,9 +16,10 @@ const labelCcodeUser = document.getElementById('label-code-user')
 const emailUser = document.getElementById("email-user")
 const nomeUser = document.getElementById("nome")
 const cpfUser = document.getElementById("cpf-user");
-const phoneUser = document.getElementById("phone-user")
-const passwordFirstConfirmedEquals = document.getElementById("password-first");
-const passwordSecondConfirmedEquals = document.getElementById("password-second");
+let userPhone = document.getElementById("phone-user")
+let passwordFirstConfirmedEquals = document.getElementById("password-first");
+let passwordSecondConfirmedEquals = document.getElementById("password-second");
+let codeUser = document.getElementById("code-user")
 
 // Campos de senha
 const passwordUserConfirmed = document.getElementById("password-user-confirmed");
@@ -46,6 +46,7 @@ const informationLoginIncorrect = document.getElementById('information-login-inc
 const divCode = document.getElementById('div-code')
 const registerUserClass = document.querySelectorAll('.register-user')
 const confirmeCodeDiv = document.getElementById('confirme-code-div')
+const informationEmailIncorrect = document.getElementById('information-email-incorrect')
 
 // ==================================================
 
@@ -54,8 +55,10 @@ let bntRegAndLog = false;
 // Quando tiver na tela de registro
 idRegisterNowUser.addEventListener("click", function() {
 
+    titleSignOrCreate.style.marginBottom = '50px';
     cpfUser.value = ''
     passwordFirstConfirmedEquals.value = ''
+    informationLoginIncorrect.style.display = 'none'
 
     bntRegAndLog = true; // -> Quando o usuário clicar no botão de registro, ele será True e isso fará com que o botão tenha o comportamento para registrar.
     changePasswordUser.style.display = "none"
@@ -84,6 +87,7 @@ idLoginNowUser.addEventListener("click", function() {
     changePasswordUser.style.display = "block"
     idRegisterNowUser.style.display = "block";
     idLoginNowUser.style.display = "none";
+    warningPasswordDoesntMatch.style.display = 'none'
 
     passwordConfirmedDivDisplay.style.display = "none";
 
@@ -96,6 +100,7 @@ idLoginNowUser.addEventListener("click", function() {
     bntRegisterAndLogin.innerHTML = "SIGN IN";
     titleSignOrCreate.innerHTML = "Sign in to Amor de Pata";
 });
+
 // Evento do botão para alternar entre o cadastro e o login
 bntRegisterAndLogin.addEventListener('click', async function(event) {
     // Botão para ter o comportamento de logar o usuário
@@ -106,71 +111,74 @@ bntRegisterAndLogin.addEventListener('click', async function(event) {
         cpfUser.setAttribute('required', 'true')
         passwordFirstConfirmedEquals.setAttribute('required', 'true')
         passwordSecondConfirmedEquals.setAttribute('required', 'true')
+
         // Faz a validação padrão do HTML
         if (!formUser.checkValidity()) { // Verifica se todos os campos do formulário é válido sem mostrar a mensagem
             formUser.reportValidity(); // Faz a mesma verificação, diferente de cima, ele mostra a mensagem
-            const user = {
-                userName: document.getElementById('nome').value,
-                userEmail: document.getElementById('email-user').value,
-                userCPF: document.getElementById('cpf-user').value,
-                userPhone: document.getElementById('phone-user')?.value || '',
-                userPassword: document.getElementById('passwordFirst-confirmed-equals')?.value || ''
-            };
-    
-            // Agora tentaremos fazer uma conexão com o serviço (API no Java).
-            try {
-                const response = await fetch("http://localhost:8080/api/userPet/createUser", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json' // Aqui avisamos que os dados (user) serão enviados em formato JSON
-                    },
-                    body: JSON.stringify(user)
-                });
-    
-                if (passwordFirstConfirmedEquals.value === passwordSecondConfirmedEquals.value) {
-                    // Não cairá aqui se o e-mail já for cadastrado no banco de dados, não só ele como o CPF. Certifique-se de o usuário cadastrar valores diferentes.
-                    if (response.ok) { // Fazer a verificação da senhora.
-                        titleSignOrCreate.innerHTML = "CONTA CRIADA";
-                        for (var labelUserAll of labelUserRegister) {
-                            labelUserAll.style.display = 'none';
-                        }
-    
-                        for (var passwordConfirmedInputAll of passwordConfirmedInput) {
-                            passwordConfirmedInputAll.style.display = 'none';
-                        }
-    
-                        // Tirando os labels após a criação da conta.
-                        for (var labelUserAll of labelUser) {
-                            labelUserAll.style.display = 'none';
-                        }
-    
-                        // Tirando o input do CPF
-                        cpfUser.style.display = 'none';
-    
-                        // Tirando o botão de login/registro
-                        bntRegisterAndLogin.style.display = 'none';
-                        idLoginNowUser.style.display = 'none';
-                        goToMainPage.style.display = 'block';
-    
-                    } else if (response.status === 401) {
-                        console.log("Ocorreu um erro.");
-                    } else {
-                        formUser.reportValidity();
-                        console.log("ERRO:" + response.status);
-                        console.log("Erro no código. Cadastro não realizado!")
-                    }
-                } else {
-                    warningPasswordDoesntMatch.style.display = "block";
-                    passwordFirstConfirmedEquals.addEventListener("click", function() {
-                        warningPasswordDoesntMatch.style.display = "none";
-                    });
-                }
-    
-            } catch (error) {
-                console.log("Erro na solicitação:" + error);
-            }
+           return;
         }
-        
+        event.preventDefault(); 
+        const user = {
+            userName: nomeUser.value,
+            userEmail: emailUser.value,
+            userCPF: cpfUser.value,
+            userNumber: userPhone.value,
+            userPassword: passwordFirstConfirmedEquals.value
+        };
+
+        console.log(userPhone.value)
+        // Agora tentaremos fazer uma conexão com o serviço (API no Java).
+        try {
+            const response = await fetch("http://localhost:8080/api/userPet/createUser", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // Aqui avisamos que os dados (user) serão enviados em formato JSON
+                },
+                body: JSON.stringify(user)
+            });
+
+            if (passwordFirstConfirmedEquals.value === passwordSecondConfirmedEquals.value) {
+                // Não cairá aqui se o e-mail já for cadastrado no banco de dados, não só ele como o CPF. Certifique-se de o usuário cadastrar valores diferentes.
+                if (response.ok) { // Fazer a verificação da senhora.
+                    titleSignOrCreate.innerHTML = "CONTA CRIADA";
+                    for (var labelUserAll of labelUserRegister) {
+                        labelUserAll.style.display = 'none';
+                    }
+
+                    for (var passwordConfirmedInputAll of passwordConfirmedInput) {
+                        passwordConfirmedInputAll.style.display = 'none';
+                    }
+
+                    // Tirando os labels após a criação da conta.
+                    for (var labelUserAll of labelUser) {
+                        labelUserAll.style.display = 'none';
+                    }
+
+                    // Tirando o input do CPF
+                    cpfUser.style.display = 'none';
+
+                    // Tirando o botão de login/registro
+                    bntRegisterAndLogin.style.display = 'none';
+                    idLoginNowUser.style.display = 'none';
+                    goToMainPage.style.display = 'block';
+
+                } else if (response.status === 401) {
+                    console.log("Ocorreu um erro.");
+                } else {
+                    formUser.reportValidity();
+                    console.log("ERRO:" + response.status);
+                    console.log("Erro no código. Cadastro não realizado!")
+                }
+            } else {
+                warningPasswordDoesntMatch.style.display = "block";
+                passwordFirstConfirmedEquals.addEventListener("click", function() {
+                    warningPasswordDoesntMatch.style.display = "none";
+                });
+            }
+
+        } catch (error) {
+            console.log("Erro na solicitação:" + error);
+        }
 
     // Botão para ter o comportamento de logar o usuário
     } else{
@@ -246,7 +254,7 @@ changePasswordUser.addEventListener('click', function (event) {
     bntCancelCodeUser.style.display = 'block'
 })
 
-// Quando clicar no botão "Cancelar" (não quer mais receber o código)
+// Quando clicar no botão "Cancelar" (Quer cancelar a mudança de senha)
 bntCancelCodeUser.addEventListener('click', function(){
     cpfUser.style.display = 'block'
     passwordConfirmedEquals.style.display = 'block'
@@ -260,6 +268,7 @@ bntCancelCodeUser.addEventListener('click', function(){
     changePasswordUser.style.display = 'block'
     bntCodeUser.style.display = 'none'
     bntCancelCodeUser.style.display = 'none'
+    informationEmailIncorrect.style.display = 'none'
 })
 
 
@@ -268,7 +277,6 @@ bntCancelCodeUser.addEventListener('click', function(){
 // Após isso, você precisará usar esse mesmo e-mail para confirmar que é o usuário e redefinir a senha.
 bntCodeUser.addEventListener('click', async function (event) {
     const form = document.getElementById('form-user-teste');
-
     emailUser.setAttribute('required', 'true') // adicionar o atributo de obrigação
 
     // O required no HTML + display: none no JavaScript não combinam. Por que? O navegador, por mais que o campo esteja escondido,
@@ -294,53 +302,65 @@ bntCodeUser.addEventListener('click', async function (event) {
 
             // Há um pequeno tempo no backEnd até o envio do E-mail.
             if(envioEmail.ok){
-
+                console.log('E-mail enviado!')
                 titleSignOrCreate.innerHTML = 'CÓDIGO ENVIADO'
                 confirmeCodeDiv.style.display = 'flex'
                 divCode.style.display = 'none'
-
                 registerUserClass.forEach(element => {
                     element.style.display = 'none'; // Escondendo cada elemento
                 });
             } else{
-                console.log("Houve um erro na requisição.")
+                informationEmailIncorrect.style.display = 'flex'
+                console.log("Erro ao enviado e-mail.")
+
+                emailUser.addEventListener('click', function(){
+                    informationEmailIncorrect.style.display = 'none'
+                })
             }
         } catch(erro){
             console.log("Houve um problema." + erro)
         }
     } else{
-        console.log("Ocorreu algum problema.")
+        console.log("Ocorreu algum problema ao enviar o e-mail.")
     }
 
 })
 
-
-// Botão para confirmar o código
+// Botão para enviar código.
 bntSendCodeUser.addEventListener('click', async function (event) {
+    const form = document.getElementById('form-user-teste');
+    codeUser.setAttribute('required', 'true') 
 
-    if(formUser.checkVisibility()){
-        event.defaultPrevented()
+    if(form.reportValidity()){
+        event.preventDefault()
 
-        const codeUserJson = {
-            codeUser: document.getElementById("code_user").value
-        }
+        const passwordEqualUser = {
+            code: Number.parseInt(codeUser.value) // Transforma em número pq o input está em texto. O backEnd não aceita texto!
+        };
+        console.log(passwordEqualUser);
 
-        try {
-            const response = await fetch("http://localhost:8080/api/userPet/verifyCode", {
+        try{
+            const changePassword = await fetch("http://localhost:8080/api/userPet/verifyCode", {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json' 
                 },
-                body: JSON.stringify(codeUserJson)
+                body: JSON.stringify(passwordEqualUser)
             });
 
-            if(response.ok){
+            if(changePassword.ok) {
+                codeUser.style.display = "none"
 
+            } else{
+                console.log("Código incorreto.")
             }
-        }catch(erro) {
-        console.log("Ocorreu um erro: " + erro)
+        } catch(erro){
+            console.log("Problemas no código.")
         }
-    
-        }
-
+    }
 })
+// Função para impedir o usuário de colocar texto
+function validateNumber(input) {
+    const value = input.value;
+    input.value = value.replace(/\D/g, '');
+}
