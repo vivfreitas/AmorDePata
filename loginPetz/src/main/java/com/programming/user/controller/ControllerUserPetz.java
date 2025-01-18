@@ -2,6 +2,7 @@ package com.programming.user.controller;
 
 import com.programming.user.entities.*;
 import com.programming.user.service.UserServicePetz;
+import org.bouncycastle.pqc.math.ntru.HRSSPolynomial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,10 @@ public class ControllerUserPetz {
     @PostMapping("enviarEmail")
     public ResponseEntity<String> sendEmail(@RequestBody Map<String, String> email) { // Chave e valor do postman
         String userEmail = email.get("userEmail"); // Nome do corpo da requisição que definimos.
+        boolean checkEmail = userServicePetz.checkEmailUser(userEmail);
+        if (!checkEmail){ // Checagem auxiliar para não parar o assíncrono
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email não encontrado");
+        }
         userServicePetz.enviarEmail(userEmail);
         return ResponseEntity.accepted().body("E-mail está sendo processado...");
     }
@@ -30,9 +35,9 @@ public class ControllerUserPetz {
     public ResponseEntity<String> verifyCode(@RequestBody VerifyCodeNumber number) {
         Boolean code = userServicePetz.verifyNumber(number.getCode()); // Verifica se é o mesmo código enviado no e-mail.
         if (code){
-            return ResponseEntity.ok("Carregando....");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Código correto.");
         }
-        return ResponseEntity.ok("Código errado");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código Incorreto.");
     }
 
     // change password
@@ -42,7 +47,7 @@ public class ControllerUserPetz {
         if (objUpdate){
             return ResponseEntity.ok("Senha alterada"); // Precisa ser true
         }
-        return ResponseEntity.ok("Senha não alterada.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("E-mail não encontrado!");
     }
     // Create user.
     // If you want to show user your response from createUser, you should change <?> to UserPetz.

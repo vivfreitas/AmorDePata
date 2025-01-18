@@ -2,20 +2,20 @@ package com.programming.user.entities;
 
 public class VerifyCodeNumber {
 
-    private Integer code;
+    private Integer codeUser;
 
 
     public Integer getCode() {
-        return code;
+        return codeUser;
     }
 
-    public void setCode(Integer code) {
-        this.code = code;
+    public void setCode(Integer codeUser) {
+        this.codeUser = codeUser;
     }
 
     public VerifyCodeNumber(){}
 
-    public VerifyCodeNumber(Integer code){
-        this.code = code;
+    public VerifyCodeNumber(Integer codeUser){
+        this.codeUser = codeUser;
     }
 }
