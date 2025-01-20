@@ -8,13 +8,14 @@
 const titleSignOrCreate = document.getElementById("title-sign-or-create");
 const labelUserRegister = document.querySelectorAll(".label-user-register");
 const labelUser = document.querySelectorAll(".label-user");
-const userEmail = document.getElementById("userEmail");  
+const userEmail = document.getElementById("userEmail");
 const cpfUserLabel = document.getElementById('cpf-user-label') 
 const labelCcodeUser = document.getElementById('label-code-user')  
+const alertCreateAccount = document.getElementById('alert-createAccount');
 
 // Inputs
 const emailUser = document.getElementById("email-user")
-const nomeUser = document.getElementById("nome")
+const nomeUser = document.getElementById("nome");
 const cpfUser = document.getElementById("cpf-user");
 let userPhone = document.getElementById("phone-user")
 let passwordFirstConfirmedEquals = document.getElementById("password-first");
@@ -22,11 +23,11 @@ let passwordSecondConfirmedEquals = document.getElementById("password-second");
 let codeUser = document.getElementById("code-user")
 
 // Campos de senha
-const passwordUserConfirmed = document.getElementById("password-user-confirmed");
+const passwordUserConfirmed = document.getElementById("password-user-confirmed")
 const passwordConfirmedEquals = document.querySelector(".password-confirmed-equals");
 const passwordConfirmedInput = document.querySelectorAll(".password-confirmed-input");
 const passwordConfirmedDivDisplay = document.getElementById("password-confirmed-div-display");
-const warningPasswordDoesntMatch = document.getElementById("warning_passwordDoenst_matches");
+const warningPasswordDoesntMatch = document.getElementById("warning_passwordDoenst_match");
 
 // Botões
 const bntRegisterAndLogin = document.getElementById("bnt-login-user");
@@ -37,6 +38,7 @@ const changePasswordUser = document.getElementById("change_password_user");
 const bntCodeUser = document.getElementById('bnt-code-user');
 const bntCancelCodeUser = document.getElementById('bnt-cancel-code');
 const bntSendCodeUser = document.getElementById('bnt-send-codeUser');
+const bntChangePassword = document.getElementById("bnt-chande-passwordUser");
 
 // Formulário
 const formUser = document.getElementById("form-user-teste");
@@ -47,6 +49,8 @@ const divCode = document.getElementById('div-code')
 const registerUserClass = document.querySelectorAll('.register-user')
 const confirmeCodeDiv = document.getElementById('confirme-code-div')
 const informationEmailIncorrect = document.getElementById('information-email-incorrect')
+const informationCodeIncorrect = document.getElementById('information-code-incorrect')
+
 
 // ==================================================
 
@@ -80,6 +84,7 @@ idRegisterNowUser.addEventListener("click", function() {
 
 // Quando tiver na tela de Login
 idLoginNowUser.addEventListener("click", function() {
+    alertCreateAccount.style.display = 'none'
     cpfUser.value = ''
     passwordFirstConfirmedEquals.value = ''
 
@@ -118,14 +123,29 @@ bntRegisterAndLogin.addEventListener('click', async function(event) {
            return;
         }
         event.preventDefault(); 
+
+        let userPasswordGlobal = ""
+        if (passwordFirstConfirmedEquals.value == passwordSecondConfirmedEquals.value) {
+            userPasswordGlobal = passwordFirstConfirmedEquals.value
+        } else{
+            warningPasswordDoesntMatch.style.display = "block";
+            passwordFirstConfirmedEquals.addEventListener("input", function() {
+                warningPasswordDoesntMatch.style.display = "none";
+            });
+
+            passwordSecondConfirmedEquals.addEventListener("input", function () {
+                warningPasswordDoesntMatch.style.display = "none";
+            });
+            return;
+        }
         const user = {
             userName: nomeUser.value,
-            userEmail: emailUser.value,
+            userEmail: emailUser.value.toLowerCase(),
             userCPF: cpfUser.value,
             userNumber: userPhone.value,
-            userPassword: passwordFirstConfirmedEquals.value
+            userPassword: userPasswordGlobal
         };
-
+       
         console.log(userPhone.value)
         // Agora tentaremos fazer uma conexão com o serviço (API no Java).
         try {
@@ -137,8 +157,7 @@ bntRegisterAndLogin.addEventListener('click', async function(event) {
                 body: JSON.stringify(user)
             });
 
-            if (passwordFirstConfirmedEquals.value === passwordSecondConfirmedEquals.value) {
-                // Não cairá aqui se o e-mail já for cadastrado no banco de dados, não só ele como o CPF. Certifique-se de o usuário cadastrar valores diferentes.
+                // Não cairá aqui se o e-mail já for cadastrado no banco de dados, não só ele como o CPF também. Certifique-se de o usuário cadastrar valores diferentes.
                 if (response.ok) { // Fazer a verificação da senhora.
                     titleSignOrCreate.innerHTML = "CONTA CRIADA";
                     for (var labelUserAll of labelUserRegister) {
@@ -168,14 +187,16 @@ bntRegisterAndLogin.addEventListener('click', async function(event) {
                     formUser.reportValidity();
                     console.log("ERRO:" + response.status);
                     console.log("Erro no código. Cadastro não realizado!")
+                    alertCreateAccount.style.display = 'flex'
+                    emailUser.addEventListener('click', function(){
+                        alertCreateAccount.style.display = 'none'
+                    })
+                    cpfUser.addEventListener('click', function(){
+                        alertCreateAccount.style.display = 'none'
+                    })
+                    
                 }
-            } else {
-                warningPasswordDoesntMatch.style.display = "block";
-                passwordFirstConfirmedEquals.addEventListener("click", function() {
-                    warningPasswordDoesntMatch.style.display = "none";
-                });
-            }
-
+               
         } catch (error) {
             console.log("Erro na solicitação:" + error);
         }
@@ -273,8 +294,7 @@ bntCancelCodeUser.addEventListener('click', function(){
 
 
 // Botão para enviar o código para o e-mail do usuário.
-// Quando o usuário clicar, abrirá um formulário para confirmar o código.
-// Após isso, você precisará usar esse mesmo e-mail para confirmar que é o usuário e redefinir a senha.
+let emailUserGlobal = ""; // será usado para trocar a senha no último evento do código.
 bntCodeUser.addEventListener('click', async function (event) {
     const form = document.getElementById('form-user-teste');
     emailUser.setAttribute('required', 'true') // adicionar o atributo de obrigação
@@ -285,12 +305,12 @@ bntCodeUser.addEventListener('click', async function (event) {
     if(form.checkValidity()){
         event.preventDefault();
         const userEmailSend = {
-            userEmail: document.getElementById("email-user").value
+            userEmail: document.getElementById("email-user").value.toLowerCase()
         };
+        emailUserGlobal = userEmailSend.userEmail;
 
         console.log(userEmailSend.userEmail)
 
-        // Vamos colocar a URL para envio de e-mail para o usuário.
         try {
             const envioEmail = await fetch("http://localhost:8080/api/userPet/enviarEmail", {
                 method: 'POST',
@@ -300,14 +320,14 @@ bntCodeUser.addEventListener('click', async function (event) {
                 body: JSON.stringify(userEmailSend)
             });
 
-            // Há um pequeno tempo no backEnd até o envio do E-mail.
+            // Há um pequeno tempo no backEnd até o envio do E-mail. Foi criado uma thread no back-end separada para que o código não pare.
             if(envioEmail.ok){
                 console.log('E-mail enviado!')
                 titleSignOrCreate.innerHTML = 'CÓDIGO ENVIADO'
                 confirmeCodeDiv.style.display = 'flex'
                 divCode.style.display = 'none'
                 registerUserClass.forEach(element => {
-                    element.style.display = 'none'; // Escondendo cada elemento
+                    element.style.display = 'none'; 
                 });
             } else{
                 informationEmailIncorrect.style.display = 'flex'
@@ -327,7 +347,7 @@ bntCodeUser.addEventListener('click', async function (event) {
 })
 
 // Botão para enviar código.
-bntSendCodeUser.addEventListener('click', async function (event) {
+bntSendCodeUser.addEventListener('click', async function (event) { 
     const form = document.getElementById('form-user-teste');
     codeUser.setAttribute('required', 'true') 
 
@@ -340,22 +360,103 @@ bntSendCodeUser.addEventListener('click', async function (event) {
         console.log(passwordEqualUser);
 
         try{
-            const changePassword = await fetch("http://localhost:8080/api/userPet/verifyCode", {
+            const changePassword = await fetch("http://localhost:8080/api/userPet/verifyCode", { // Espera uma promise 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json' 
                 },
                 body: JSON.stringify(passwordEqualUser)
             });
-
-            if(changePassword.ok) {
+            if(changePassword.ok) { // Se o retorno da promise for Ok, continua.
+                console.log(emailUserGlobal)
+                titleSignOrCreate.innerHTML = 'REDEFINIÇÃO DE SENHA'
+                bntSendCodeUser.style.display = "none"
+                bntChangePassword.style.display = "block"
                 codeUser.style.display = "none"
+                passwordConfirmedInput.forEach(inputsSenha => {
+                    inputsSenha.style.display = "block"
+                    });
+
+                    passwordConfirmedDivDisplay.style.display = "block"
+                    passwordFirstConfirmedEquals.style.display = "block"
+                    passwordUserConfirmed.style.flexDirection = "column"
+                    passwordConfirmedEquals.style.display = "block"
+                    passwordConfirmedDivDisplay.style.marginTop = "25px"
+                    labelCcodeUser.style.display = "none"
 
             } else{
-                console.log("Código incorreto.")
+                informationCodeIncorrect.style.display = "flex"
+                codeUser.addEventListener("click", function(){
+                    informationCodeIncorrect.style.display = "none"
+                })
+
+                console.log("Código incorreto")
             }
-        } catch(erro){
+        } catch(erro){ // Caso ao contrário, pare aqui.
             console.log("Problemas no código.")
+        }
+    }
+        // Se houver outras funções paralelas antes do retorno do valor acima, o código continuará até que termine de resolver a promise.
+
+})
+
+// Botão para mudar a senha
+bntChangePassword.addEventListener('click', async function(event){
+    const form = document.getElementById('form-user-teste');
+    codeUser.setAttribute('required', 'true')
+    passwordFirstConfirmedEquals.setAttribute('required', 'true')
+    passwordSecondConfirmedEquals.setAttribute('required', 'true') 
+
+    if(form.reportValidity()){
+        event.preventDefault()
+
+        let userPasswordGlobal = ""
+        if (passwordFirstConfirmedEquals.value == passwordSecondConfirmedEquals.value) {
+            userPasswordGlobal = passwordFirstConfirmedEquals.value
+        } else{
+            warningPasswordDoesntMatch.style.display = "block";
+            passwordFirstConfirmedEquals.addEventListener("input", function() {
+                warningPasswordDoesntMatch.style.display = "none";
+            });
+
+            passwordSecondConfirmedEquals.addEventListener("input", function () {
+                warningPasswordDoesntMatch.style.display = "none";
+            });
+            return;
+        }
+
+        console.log(userPasswordGlobal)
+        const passwordFromUser = {
+            userEmail: emailUserGlobal,
+            userPassword: userPasswordGlobal
+        }
+
+        try{
+            const response = await fetch("http://localhost:8080/api/userPet/changePassword",{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(passwordFromUser)
+            });
+
+            if(response.ok){
+                    console.log(emailUserGlobal)
+                    titleSignOrCreate.innerHTML = 'SENHA ALTERADA COM SUCESSO'
+                    bntChangePassword.style.display = "none"
+                    bntSendCodeUser.style.display = "none"
+                    passwordConfirmedInput.forEach(inputsSenha => {
+                    inputsSenha.style.display = "none"
+                    });
+
+                    passwordConfirmedDivDisplay.style.display = "none"
+                    passwordFirstConfirmedEquals.style.display = "none"
+                    passwordConfirmedEquals.style.display = "none"
+                    labelCcodeUser.style.display = "none"
+                    bntChangePassword.style.display = "none"
+                }
+        }catch(erro){
+            console.log("Problemas no backEnd. Contate o seu desenvolvedor!")
         }
     }
 })
