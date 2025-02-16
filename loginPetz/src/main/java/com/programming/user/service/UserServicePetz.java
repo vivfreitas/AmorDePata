@@ -6,12 +6,14 @@ import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserServicePetz {
@@ -26,21 +28,45 @@ public class UserServicePetz {
    private final Random randomCode = new Random();
    private int code;
     public int generateRandomCode(){
-        code = randomCode.nextInt(6000);
-        return code;
+        code = randomCode.nextInt(900000);
+        if (code > 100000) {
+            return code;
+        }
+        return 0;
     }
 
-   // Send an e-mail - Envia o código de confirmação.
-    public Boolean enviarEmail(String userEmail){
+     // Send an e-mail - Envia o código de confirmação.
+    // Faremos com que o E-mail trabalhe de forma assíncrona
+    @Async
+    public CompletableFuture<Boolean> enviarEmail(String userEmail){ // CompletableFuture -> Quando queremos ver o resultado, usamos ele. Caso ao contrário, será necessário o Void.
+        String email = userEmail.trim();
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         List<UserPetz> userData = userPetzRepository.findAll();
         for (UserPetz obj: userData){
-            if (obj.getUserEmail().equals(userEmail)){ // Se for verdadeiro.
+            if (obj.getUserEmail().equals(email)){ // Se for verdadeiro.
                 generateRandomCode();
-                mailMessage.setTo(userEmail);
-                mailMessage.setSubject("Changed Password");
-                mailMessage.setText("Código: " + code); /* gerador de número */
-                javaMailSender.send(mailMessage);
+                mailMessage.setTo(email);
+                mailMessage.setSubject("Pets - Verificação de segurança");
+                mailMessage.setText("Código para redefinição de senha: " + code); /* gerador de número */
+                try{
+                    javaMailSender.send(mailMessage);
+                    System.out.println("E-mail enviado com sucesso para: " + email);
+                    return CompletableFuture.completedFuture(true);
+                } catch (Exception e) {
+                    System.err.println("Erro ao enviar e-mail: " + e.getMessage());
+                    return CompletableFuture.completedFuture(false);
+                }
+            }
+        }
+        System.out.println("E-mail não encontrado na base de dados.");
+        return CompletableFuture.completedFuture(false);
+    } // -> alternativa para o completableFuture é o Spring WebFlux
+
+    // Verifica se o e-mail existe na base de dados para mudar a senha -> Método auxiliar para o enviarEmail
+    public Boolean checkEmailUser (String email) {
+        List<UserPetz> dataUser = userPetzRepository.findAll();
+        for (UserPetz obj: dataUser){
+            if (obj.getUserEmail().equals(email)){
                 return true;
             }
         }
@@ -52,7 +78,7 @@ public class UserServicePetz {
         return code == number;
     }
 
-    // Pegar alguma informação do usuário e usá-lo para modificar a senha.
+    // Pegar o E-mail do usuário e usá-lo para modificar a senha.
     public Boolean changePassword(UserPetz oldPassword){
         List<UserPetz> dataUser = userPetzRepository.findAll();
         for (UserPetz obj: dataUser){
@@ -66,7 +92,6 @@ public class UserServicePetz {
         }
             return false;
     }
-
     private void dataUpdate(UserPetz newPassword, UserPetz oldPassword) {
         newPassword.setUserPassword(oldPassword.getUserPassword());
     }

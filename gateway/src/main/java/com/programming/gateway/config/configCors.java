@@ -7,7 +7,7 @@ import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 // Pq configurar o CORs?
-// Para o seu backEnd, vc está dizendo: "Eu, backEnd, permito que o frontEnd acesse específico me acesse."
+// Para o seu backEnd, vc está dizendo: "Eu, backEnd, permito que o frontEnd específico me acesse."
 // Sem essa configuração, o navegador por padrão, irá bloquear as requisições usando o CORs.
 @Configuration
 public class configCors {

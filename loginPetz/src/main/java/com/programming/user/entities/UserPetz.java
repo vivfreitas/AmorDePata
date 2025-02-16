@@ -12,13 +12,12 @@ public class UserPetz implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUser;
-
     private String userName;
     @Column(unique = true)
     private String userEmail;
     @Column(unique = true)
     private String userCPF;
-    private Long userNumber;
+    private String userNumber;
     private String userPassword;
 
     public UserPetz(){}
@@ -56,11 +55,11 @@ public class UserPetz implements Serializable {
         return userCPF;
     }
 
-    public Long getUserNumber() {
+    public String getUserNumber() {
         return userNumber;
     }
 
-    public void setUserNumber(Long userNumber) {
+    public void setUserNumber(String userNumber) {
         this.userNumber = userNumber;
     }
 
